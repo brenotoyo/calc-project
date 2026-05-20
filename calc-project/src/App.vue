@@ -1,47 +1,53 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+    import { reactive, computed } from 'vue';
+    import Cabecalho from './components/Cabecalho.vue';
+    import CamposCalc from './components/Campos-calc.vue';
+
+    const estado = reactive ({
+        numeroA: null,
+        numeroB: null,
+        operacao: '+',
+    })
+
+    const resultado = computed(() => {
+        const a = Number(estado.numeroA);
+        const b = Number(estado.numeroB);
+
+        if (estado.numeroA === null || estado.numeroB === null) {
+            return 'Escolha 2 números!';
+        }
+
+        if (estado.operacao === '/' && a === 0) {
+            return 'Zero não é divisível!';
+        }
+
+        if (estado.operacao === '/' && b === 0) {
+            return 'Divisão por zero!';
+        }
+
+        switch (estado.operacao) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return a / b;
+            default:  return 'Operação inválida';
+        }
+    });
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <div class="container">
+        <Cabecalho />
+        <CamposCalc :escolherNumeroA="evento => estado.numeroA = evento.target.value"
+                    :escolherNumeroB="evento => estado.numeroB = evento.target.value"
+                    :escolherOperacao="evento => estado.operacao = evento.target.value" 
+        />
+        <div class="mt-4 -4 bg-ligh rounded-4">
+            <h4>Resultado: <strong>{{ resultado }}</strong></h4>
+        </div>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
